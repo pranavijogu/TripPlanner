@@ -1,0 +1,99 @@
+.navbar {
+  background-color: white; /* Example background color */
+  color: black; /* Example text color */
+  height: 60px; /* Example height */
+  display: flex;
+  align-items: center;
+  padding: 0 20px; /* Example padding */
+}
+
+.navContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.navLeft {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  font-size: x-large;
+}
+
+.logo-text {
+  font-size: 30px; /* Example font size for logo text */
+  margin-left: 10px; /* Example margin for spacing between logo and text */
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  margin-right: 20px;
+}
+
+.homeButton,
+.weatherButton {
+  background-color: #007bff; 
+  color: white; 
+  border: none;
+  padding: 10px 20px; 
+  margin-left: 10px; 
+  border-radius: 4px; 
+  cursor: pointer;
+  font-size: medium;
+}
+
+.homeButton:hover,
+.weatherButton:hover {
+  background-color: #005bff; 
+}
+
+.navItems {
+  display: flex;
+  align-items: center;
+}
+
+.navButton {
+  background-color: #4CAF50; /* Example button color */
+  color: white; /* Example text color */
+  border: none;
+  padding: 10px 20px; /* Example padding */
+  margin-left: 10px; /* Example margin for button spacing */
+  border-radius: 4px; /* Example border radius */
+  cursor: pointer;
+  font-size: medium;
+}
+
+.navButton:hover {
+  background-color: #45a049; /* Example hover color */
+}
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+}
+
+.searchInput {
+  padding: 10px;
+  font-size: medium;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-right: 10px;
+  width: 250px;
+}
+
+.searchButton {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.searchButton:hover {
+  background-color: #0056b3;
+}

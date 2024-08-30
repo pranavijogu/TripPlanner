@@ -1,0 +1,114 @@
+/* DestinationPage.css */
+
+.destinationContainer {
+  padding: 20px;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.destinationHeader {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.destinationHeader h1 {
+  font-size: 2.5em;
+  margin: 0;
+}
+
+.destinationHeader img {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  margin-top: 10px;
+}
+
+.destinationDescription {
+  margin: 30px 0;
+  font-size: 1.2em;
+  line-height: 1.6;
+  padding: 0 40px;
+}
+
+.popularPlaces {
+  margin-top: 40px;
+  font-size: large;
+  padding: 0 70px; /* Added padding to center the popular places section */
+}
+
+.popularPlaces h2 {
+  font-size: 2em;
+  margin-bottom: 40px; /* Increased margin-bottom to add more space */
+  text-align: center; /* Center the heading */
+}
+
+.popularPlace {
+  display: flex;
+  align-items: center; /* Changed to center for better alignment */
+  margin-bottom: 40px; /* Ensure consistent spacing between items */
+}
+
+.popularPlace img {
+  width: 400px;
+  height: 300px;
+  object-fit: cover;
+  margin-right: 20px;
+}
+
+.popularPlaceInfo {
+  font-size: large;
+  line-height: 1.6;
+}
+
+.popularPlaceInfo h3 {
+  margin: 0 0 10px 0;
+  font-size: 1.7em;
+}
+
+.popularPlaceInfo p {
+  margin: 0;
+}
+
+/* Styles for Rating Stars */
+.reviews {
+  margin-top: 10px;
+  display: inline-block;
+}
+
+.reviewsLogo {
+  color: #FFD700; /* Yellow color for stars */
+  font-size: 1.2em;
+}
+
+.reviewsNumber {
+  margin-left: 5px;
+  font-weight: bold;
+}
+
+/* Styles for Filled Stars */
+.star-rating {
+  unicode-bidi: bidi-override;
+  color: #FFD700; /* Yellow color for stars */
+  font-size: 1.2em;
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+}
+
+.star-rating:before {
+  content: '★★★★★';
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  color: #ccc;
+}
+
+.star-rating span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  color: #FFD700; /* Yellow color for filled stars */
+}

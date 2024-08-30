@@ -1,0 +1,62 @@
+.cityDetailContainer {
+  padding: 20px;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.cityDetailHeader {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.cityDetailHeader h1 {
+  font-size: 2.5em;
+  margin: 0;
+}
+
+.cityDetailDescription {
+  margin: 30px 0;
+  font-size: 1.2em;
+  line-height: 1.6;
+  padding: 0 40px;
+}
+
+.cityPlace {
+  margin-bottom: 40px;
+  /* Ensure consistent spacing between items */
+}
+
+.cityPlaceInfo {
+  font-size: 1.0em;
+  line-height: 1.6;
+}
+
+.cityPlaceInfo h3 {
+  margin: 0 0 15px 0;
+  font-size: 1.6em;
+}
+
+.cityPlaceInfo p {
+  margin: 0;
+}
+
+.cityPlaceInfo .bold {
+  font-weight: bold;
+}
+
+
+
+.reviewsNumber {
+  margin-left: 5px;
+  font-weight: bold;
+}
+
+
+.star-rating {
+  unicode-bidi: bidi-override;
+  color: #FFD700;
+  /* Yellow color for stars */
+  font-size: 1.2em;
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+}

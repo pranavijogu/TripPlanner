@@ -1,0 +1,48 @@
+.mail {
+  width: 100%;
+  margin-top: 50px;
+  background-color: #003580;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 50px;
+  font-size: 50px; /* Adjust the font size as needed */
+}
+
+.mailTitle {
+  font-size: 30px; /* Increase title font size */
+}
+
+.mailDesc {
+  font-size: 19px; /* Increase description font size */
+}
+
+.mailInputContainer > input {
+  width: 300px;
+  height: 40px;
+  padding: 10px;
+  border: none;
+  margin-right: 10px;
+  border-radius: 5px;
+  font-size: 16px; /* Increase input font size */
+}
+
+.mailInputContainer > button {
+  height: 50px;
+  width: 130px;
+  background-color: #0071c2;
+  color: white;
+  font-weight: 500;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px; /* Increase button font size */
+}
+
+.doneIcon {
+  vertical-align: middle;
+  margin-left: 5px; /* Adjust margin as needed */
+  font-size: 20px; /* Increase icon font size */
+}

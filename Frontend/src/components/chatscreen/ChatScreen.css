@@ -1,0 +1,149 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  font-family: Arial, sans-serif;
+}
+
+.chat-screen {
+  display: flex;
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+}
+
+.input-section {
+  width: 30%;
+  padding-right: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.input-container {
+  margin-bottom: 10px;
+}
+
+.input-container input {
+  width: calc(100% - 20px);
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 18px;
+}
+
+.input-container button {
+  width: calc(100% - 20px);
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: #656464;
+  color: white;
+  cursor: pointer;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 18px;
+}
+
+.sample-questions {
+  margin-top: 20px;
+}
+
+.sample-questions h3 {
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.sample-questions button {
+  display: block;
+  margin-bottom: 5px;
+  width: calc(100% - 20px);
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: #ffffff;
+  color: rgb(0, 0, 0);
+  cursor: pointer;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 16px;
+}
+
+.sample-questions button:hover {
+  background-color: #f0f0f0;
+}
+
+.chat-container {
+  width: 70%;
+}
+
+.chat-box {
+  border: 1px solid #000000;
+  border-radius: 10px;
+  padding: 20px;
+  height: 600px;
+  overflow-y: auto;
+  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.chat-message {
+  margin: 10px 0;
+  padding: 10px 20px;
+  border-radius: 20px;
+  max-width: 100%;
+  word-wrap: break-word;
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+}
+
+.chat-message.user {
+  background-color: #8aa5fc;
+  align-self: flex-end;
+  text-align: right;
+  border-bottom-right-radius: 0;
+  font-size: 18px;
+}
+
+.chat-message.bot {
+  background-color: #ffd3b1;
+  align-self: flex-start;
+  text-align: left;
+  border-bottom-left-radius: 0;
+  font-size: 18px;
+}
+
+.chat-message img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.chat-message.user img {
+  order: 2;
+  margin-left: 10px;
+  margin-right: 0;
+}
+
+.chat-title {
+  font-family: Georgia, serif;
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.input-section h2 {
+  font-family: Georgia, serif; /* Set font to Georgia */
+  margin-bottom: 10px;
+  text-align: center; /* Add spacing below the title */
+}
