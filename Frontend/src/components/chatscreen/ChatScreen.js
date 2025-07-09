@@ -10,7 +10,6 @@ function ChatScreen() {
   const [location, setLocation] = useState('');
   const [numberOfDays, setNumberOfDays] = useState('');
   const [type, setType] = useState('');
-  const [bestTimeToVisit, setBestTimeToVisit] = useState('');
   const [sampleQuestions, setSampleQuestions] = useState([]);
 
   const chatBottomRef = useRef(null);
@@ -66,23 +65,18 @@ function ChatScreen() {
       return;
     }
 
-    if (conversation.length === 7) {
-      const botMessage = { sender: 'bot', text: 'When is the best time for you to visit?' };
-      setConversation(prev => [...prev, botMessage]);
-      setBestTimeToVisit(messageText);
-      return;
-    }
+
 
     // When all details are collected, query the LLM
-    if (location && numberOfDays && type && bestTimeToVisit) {
+    if (location && numberOfDays && type) {
       try {
-        const response = await fetch('https://b916-34-80-194-249.ngrok-free.app/api/model', {
+        const response = await fetch('https://0826-34-16-99-176.ngrok-free.app/api/model', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            prompt: `${location}, ${numberOfDays} days, ${type}, best time to visit ${bestTimeToVisit}`,
+            prompt: `${location}, ${numberOfDays} days, ${type}`,
             sessionId: sessionId,
             conversation: conversation
           }),
@@ -104,7 +98,7 @@ function ChatScreen() {
       setLocation('');
       setNumberOfDays('');
       setType('');
-      setBestTimeToVisit('');
+      
     }
 
     chatBottomRef.current.scrollIntoView({ behavior: 'smooth' });
