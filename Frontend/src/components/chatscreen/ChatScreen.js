@@ -1,156 +1,227 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import './ChatScreen.css';
 
+// --- Helper Components for Displaying Results ---
+const FlightCard = ({ flight }) => (
+  <div className="card flight-card">
+    <h3>✈️ {flight.airline} - {flight.stops}</h3>
+    <p><strong>Departure:</strong> {flight.departure}</p>
+    <p><strong>Arrival:</strong> {flight.arrival}</p>
+    <p><strong>Duration:</strong> {flight.duration}</p>
+    <p><strong>Class:</strong> {flight.travel_class}</p>
+    <p className="price"><strong>Price:</strong> {flight.price}</p>
+  </div>
+);
+
+const HotelCard = ({ hotel }) => (
+  <div className="card hotel-card">
+    <h3>🏨 {hotel.name}</h3>
+    <p><strong>Rating:</strong> ⭐ {hotel.rating}</p>
+    <p><strong>Location:</strong> {hotel.location}</p>
+    <p className="price"><strong>Price:</strong> {hotel.price} per night</p>
+    <a href={hotel.link} target="_blank" rel="noopener noreferrer" className="details-link">View Details</a>
+  </div>
+);
+
+
+const AIRecommendation = ({ title, content }) => (
+    <div className="ai-recommendation">
+        <h2>{title}</h2>
+        <div className="card" dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br />') }} />
+    </div>
+);
+
+const Itinerary = ({ content }) => (
+    <div className="itinerary">
+        <h2>📅 Your Travel Itinerary</h2>
+        <div className="card" dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br />') }} />
+    </div>
+);
+
+
+// --- Main Travel Planner Component ---
+
 function ChatScreen() {
-  const [inputText, setInputText] = useState('');
-  const [conversation, setConversation] = useState([
-    { sender: 'bot', text: 'Hello! How can I assist you today?' }
-  ]);
-  const [sessionId, setSessionId] = useState(null);
-  const [location, setLocation] = useState('');
-  const [numberOfDays, setNumberOfDays] = useState('');
-  const [type, setType] = useState('');
-  const [sampleQuestions, setSampleQuestions] = useState([]);
+  // State for form inputs
+  const [origin, setOrigin] = useState('');
+  const [destination, setDestination] = useState('');
+  const [outboundDate, setOutboundDate] = useState(new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0]);
+  const [returnDate, setReturnDate] = useState(new Date(new Date().setDate(new Date().getDate() + 8)).toISOString().split('T')[0]);
+  const [searchMode, setSearchMode] = useState('Complete'); // 'Complete', 'FlightsOnly', 'HotelsOnly'
 
-  const chatBottomRef = useRef(null);
+  // State for API results and UI
+  const [results, setResults] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [activeTab, setActiveTab] = useState('flights');
 
-  useEffect(() => {
-    setSessionId(`session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`);
-    setSampleQuestions(generateRandomSampleQuestions());
-  }, []);
+  const handleSearch = async (e) => {
+  e.preventDefault();
+  setIsLoading(true);
+  setError('');
+  setResults(null);
 
-  const generateRandomSampleQuestions = () => {
-    const questions = [
-      "What are the top 3 most popular attractions in Delhi?",
-      "Which attractions are open on Mondays?",
-      "Where is the best place to visit in summer?",
-      "What are the must-visit places for food lovers?",
-      "How can I plan a budget-friendly trip?",
-      "What are the historical landmarks in India?",
-      "What are the most beautiful beaches in India?",
-      "Where can I experience wildlife safaris in India?"
-    ];
+  // --- Input Validation ---
+  if (!origin || !destination) {
+    setError('Please provide both origin and destination airports.');
+    setIsLoading(false);
+    return;
+  }
+  if (new Date(outboundDate) >= new Date(returnDate)) {
+    setError('Return date must be after the departure date.');
+    setIsLoading(false);
+    return;
+  }
 
-    const shuffledQuestions = questions.sort(() => Math.random() - 0.5);
-    return shuffledQuestions.slice(0, 3);
+  // --- Prepare API Request ---
+  const API_BASE_URL = "https://d4308e39f84f.ngrok-free.app"; 
+  let endpoint = '';
+  let payload = {};
+
+  const flightData = {
+    origin,
+    destination,
+    outbound_date: outboundDate,
+    return_date: returnDate,
   };
 
-  const handleSubmit = async () => {
-    const messageText = inputText.trim();
-    if (!messageText) return;
-
-    const userMessage = { sender: 'user', text: messageText };
-    setConversation([...conversation, userMessage]);
-    setInputText('');
-
-    // Check if it's a location, days, type, or best time question
-    if (conversation.length === 1) {
-      const botMessage = { sender: 'bot', text: 'Hello.Which place do you want to travel?' };
-      setConversation(prev => [...prev, botMessage]);
-      setLocation(messageText);
-      return;
-    }
-
-    if (conversation.length === 3) {
-      const botMessage = { sender: 'bot', text: 'How many days are you planning to stay?' };
-      setConversation(prev => [...prev, botMessage]);
-      setNumberOfDays(messageText);
-      return;
-    }
-
-    if (conversation.length === 5) {
-      const botMessage = { sender: 'bot', text: 'What type of attractions are you interested in?' };
-      setConversation(prev => [...prev, botMessage]);
-      setType(messageText);
-      return;
-    }
-
-
-
-    // When all details are collected, query the LLM
-    if (location && numberOfDays && type) {
-      try {
-        const response = await fetch('https://0826-34-16-99-176.ngrok-free.app/api/model', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            prompt: `${location}, ${numberOfDays} days, ${type}`,
-            sessionId: sessionId,
-            conversation: conversation
-          }),
-        });
-
-        const data = await response.json();
-        const botResponse = data.response;
-
-        const formattedResponse = formatResponse(botResponse);
-        const botMessage = { sender: 'bot', text: formattedResponse };
-        setConversation(prev => [...prev, botMessage]);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        const errorMessage = { sender: 'bot', text: 'Error fetching data. Please try again later.' };
-        setConversation(prev => [...prev, errorMessage]);
-      }
-
-      // Clear state after processing the query
-      setLocation('');
-      setNumberOfDays('');
-      setType('');
-      
-    }
-
-    chatBottomRef.current.scrollIntoView({ behavior: 'smooth' });
+  const hotelData = {
+    location: destination,
+    check_in_date: outboundDate,
+    check_out_date: returnDate,
   };
 
-  const handleSampleQuestionClick = (question) => {
-    setInputText(question);
-  };
+  switch (searchMode) {
+    case 'FlightsOnly':
+      endpoint = `${API_BASE_URL}/search_flights/`;
+      payload = flightData;
+      setActiveTab('flights');
+      break;
+    case 'HotelsOnly':
+      endpoint = `${API_BASE_URL}/search_hotels/`;
+      payload = hotelData;
+      setActiveTab('hotels');
+      break;
+    case 'Complete':
+    default:
+      endpoint = `${API_BASE_URL}/complete_search/`;
+      payload = flightData;
+      setActiveTab('flights');
+      break;
+  }
 
-  const formatResponse = response => {
-    const formattedResponse = response
-      .replace(/\*\*(.*?)\*\*/g, '$1') // Remove **text**
-      .replace(/\*(.*?)\*/g, '$1')     // Remove *text*
-      .replace(/\n/g, '<br>');         // Replace newline with <br>
+  // --- Call API ---
+  try {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': 'true', 
+      },
+      body: JSON.stringify(payload),
+    });
 
-    return <span dangerouslySetInnerHTML={{ __html: formattedResponse }} />;
-  };
+    if (!response.ok) {
+      const errData = await response.json();
+      throw new Error(errData.detail || `HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    setResults(data);
+
+  } catch (err) {
+    setError(err.message);
+  } finally {
+    setIsLoading(false);
+  }
+};
+  
+  const renderTabs = () => {
+    const tabs = [];
+    if (searchMode !== 'HotelsOnly') tabs.push({id: 'flights', label: '✈️ Flights'});
+    if (searchMode !== 'FlightsOnly') tabs.push({id: 'hotels', label: '🏨 Hotels'});
+    if (results?.ai_flight_recommendation || results?.ai_hotel_recommendation) {
+        tabs.push({id: 'recommendations', label: '🏆 AI Recommendations'});
+    }
+    if (results?.itinerary) tabs.push({id: 'itinerary', label: '📅 Itinerary'});
+
+    return (
+        <div className="tabs">
+            {tabs.map(tab => (
+                <button 
+                    key={tab.id} 
+                    className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
+                    onClick={() => setActiveTab(tab.id)}
+                >
+                    {tab.label}
+                </button>
+            ))}
+        </div>
+    );
+  }
+
+  const renderContent = () => {
+    if (!results) return null;
+
+    switch(activeTab) {
+        case 'flights':
+            return <div className="grid-container">{results.flights?.map((f, i) => <FlightCard key={i} flight={f} />)}</div>;
+        case 'hotels':
+            return <div className="grid-container">{results.hotels?.map((h, i) => <HotelCard key={i} hotel={h} />)}</div>;
+        case 'recommendations':
+            return (
+                <div>
+                    {results.ai_flight_recommendation && <AIRecommendation title="✈️ AI Flight Recommendation" content={results.ai_flight_recommendation} />}
+                    {results.ai_hotel_recommendation && <AIRecommendation title="🏨 AI Hotel Recommendation" content={results.ai_hotel_recommendation} />}
+                </div>
+            );
+        case 'itinerary':
+            return <Itinerary content={results.itinerary} />;
+        default:
+            return null;
+    }
+  }
 
   return (
-    <div className="chat-screen">
-      <div className="input-section">
-        <h2>Chat with AI</h2> {/* Added title */}
-        <div className="input-container">
-          <input
-            type="text"
-            value={inputText}
-            onChange={e => setInputText(e.target.value)}
-            onKeyPress={e => {
-              if (e.key === 'Enter') {
-                handleSubmit();
-              }
-            }}
-            placeholder="Type your message here..."
-          />
-          <button onClick={() => handleSubmit()}>Submit</button>
-        </div>
-        <div className="sample-questions">
-          <h3>Sample Questions:</h3>
-          {sampleQuestions.map((question, index) => (
-            <button key={index} onClick={() => handleSampleQuestionClick(question)}>{question}</button>
-          ))}
-        </div>
+    <div className="travel-planner">
+      <header>
+        <h1>AI-Powered Travel Planner</h1>
+        <p>Find flights, hotels, and get personalized recommendations with AI!</p>
+      </header>
+      
+      <div className="search-mode-selector">
+        <label><input type="radio" value="Complete" checked={searchMode === 'Complete'} onChange={(e) => setSearchMode(e.target.value)} /> Complete Search</label>
+        <label><input type="radio" value="FlightsOnly" checked={searchMode === 'FlightsOnly'} onChange={(e) => setSearchMode(e.target.value)} /> Flights Only</label>
+        <label><input type="radio" value="HotelsOnly" checked={searchMode === 'HotelsOnly'} onChange={(e) => setSearchMode(e.target.value)} /> Hotels Only</label>
       </div>
-      <div className="chat-container">
-        <div className="chat-box">
-          {conversation.map((msg, index) => (
-            <div key={index} className={`chat-message ${msg.sender}`}>
-              {msg.text}
-            </div>
-          ))}
-          <div ref={chatBottomRef} />
+
+      <form onSubmit={handleSearch} className="search-form">
+        <div className="form-section">
+          <h2>🛫 Flight Details</h2>
+          <input type="text" value={origin} onChange={(e) => setOrigin(e.target.value)} placeholder="Departure Airport Code (e.g., HYD for Hyderabad)" required />
+          <input type="text" value={destination} onChange={(e) => setDestination(e.target.value)} placeholder="Arrival Airport Code (e.g., GOI for Goa)" required />
+          <input type="date" value={outboundDate} onChange={(e) => setOutboundDate(e.target.value)} required />
+          <input type="date" value={returnDate} onChange={(e) => setReturnDate(e.target.value)} required />
         </div>
+        
+        
+        <button type="submit" disabled={isLoading}>
+          {isLoading ? 'Searching...' : '🔍 Search'}
+        </button>
+      </form>
+
+      {error && <p className="error-message">{error}</p>}
+
+      <div className="results-section">
+        {isLoading && <div className="loader"></div>}
+        {results && (
+            <>
+                {renderTabs()}
+                <div className="tab-content">
+                    {renderContent()}
+                </div>
+            </>
+        )}
       </div>
     </div>
   );
