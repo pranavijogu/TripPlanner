@@ -2,9 +2,8 @@
 
 An intelligent travel platform that combines real-time flight/hotel data with AI-powered multi-agent analysis for personalized recommendations and automated itinerary generation.
 
-**[Demo Video](#)** 
+![Demo GIF](./TravelPlannerDemo.gif)
 
-https://github.com/user-attachments/assets/9278f7e7-1e25-485d-bd9f-7bb34421d4db
 ---
 
 ## Features
